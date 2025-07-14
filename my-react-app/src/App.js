@@ -1,21 +1,53 @@
-import { Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
-import Home from "./pages/Home";
-import Shop from "./pages/Shop";
-import ProductDetails from "./pages/ProductDetails";
-import Cart from "./pages/Cart";
-import Checkout from "./pages/Checkout";
-import Orders from "./pages/Orders";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import Profile from "./pages/Profile";
-import NotFound from "./pages/NotFound";
+import { useEffect } from 'react';
+import { Routes, Route } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { Toaster } from 'react-hot-toast';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import Home from './pages/Home';
+import Shop from './pages/Shop';
+import ProductDetails from './pages/ProductDetails';
+import Cart from './pages/Cart';
+import Checkout from './pages/Checkout';
+import Orders from './pages/Orders';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import Profile from './pages/Profile';
+import NotFound from './pages/NotFound';
+import { fetchUserProfile } from './redux/slices/authSlice';
+import { calculateTotals } from './redux/slices/cartSlice';
 
 const App = () => {
+  const dispatch = useDispatch();
+  const { isAuthenticated, token } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    // Calculate cart totals on app load
+    dispatch(calculateTotals());
+  }, [dispatch]);
+
+  useEffect(() => {
+    // Fetch user profile if authenticated
+    if (isAuthenticated && token) {
+      dispatch(fetchUserProfile());
+    }
+  }, [dispatch, isAuthenticated, token]);
+
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Navbar at the top */}
+      {/* Toast notifications */}
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 3000,
+          style: {
+            background: '#363636',
+            color: '#fff',
+          },
+        }}
+      />
+
+      {/* Navbar */}
       <Navbar />
       
       {/* Main content */}
@@ -27,6 +59,7 @@ const App = () => {
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/orders" element={<Orders />} />
+          <Route path="/orders/:id" element={<Orders />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/profile" element={<Profile />} />
@@ -34,11 +67,10 @@ const App = () => {
         </Routes>
       </main>
 
-      {/* Footer at the bottom */}
+      {/* Footer */}
       <Footer />
     </div>
   );
 };
 
 export default App;
-
