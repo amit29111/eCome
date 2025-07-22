@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const {seedDatabase} = require("./utils/seedData")
 
 // Load environment variables
 dotenv.config();
@@ -27,6 +28,8 @@ mongoose.connect(process.env.MONGODB_URI, {
 .then(() => console.log('MongoDB connected successfully'))
 .catch((err) => console.error('MongoDB connection error:', err));
 
+
+seedDatabase()
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
