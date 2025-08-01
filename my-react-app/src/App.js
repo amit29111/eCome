@@ -10,12 +10,14 @@ import ProductDetails from './pages/ProductDetails';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import Orders from './pages/Orders';
+import Wishlist from './pages/Wishlist';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Profile from './pages/Profile';
 import NotFound from './pages/NotFound';
 import { fetchUserProfile } from './redux/slices/authSlice';
 import { calculateTotals } from './redux/slices/cartSlice';
+import { fetchWishlist } from './redux/slices/wishlistSlice';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -30,6 +32,7 @@ const App = () => {
     // Fetch user profile if authenticated
     if (isAuthenticated && token) {
       dispatch(fetchUserProfile());
+      dispatch(fetchWishlist());
     }
   }, [dispatch, isAuthenticated, token]);
 
@@ -60,6 +63,7 @@ const App = () => {
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/orders/:id" element={<Orders />} />
+          <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/profile" element={<Profile />} />
