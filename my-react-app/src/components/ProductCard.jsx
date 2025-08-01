@@ -1,14 +1,18 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Heart, ShoppingCart } from 'lucide-react';
 import { addToCart } from '../redux/slices/cartSlice';
+import { addToWishlist, removeFromWishlist } from '../redux/slices/wishlistSlice';
 
 const ProductCard = ({ product }) => {
   const dispatch = useDispatch();
-  const [isFavorite, setIsFavorite] = useState(false);
   const [selectedSize, setSelectedSize] = useState(product.sizes?.[0]?.size || '');
   const [selectedColor, setSelectedColor] = useState(product.colors?.[0] || '');
+
+  const { wishlistStatus } = useSelector((state) => state.wishlist);
+  const { isAuthenticated } = useSelector((state) => state.auth);
+  const isFavorite = wishlistStatus[product._id] || false;
 
   const handleAddToCart = (e) => {
     e.preventDefault();
@@ -30,7 +34,17 @@ const ProductCard = ({ product }) => {
   const toggleFavorite = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    setIsFavorite(!isFavorite);
+    
+    if (!isAuthenticated) {
+      alert('Please login to add items to wishlist');
+      return;
+    }
+
+    if (isFavorite) {
+      dispatch(removeFromWishlist(product._id));
+    } else {
+      dispatch(addToWishlist(product._id));
+    }
   };
 
   return (

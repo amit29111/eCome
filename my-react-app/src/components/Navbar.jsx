@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { Search, User, ShoppingBag, Menu, X, LogOut } from 'lucide-react';
+import { Search, User, ShoppingBag, Menu, X, LogOut, Heart } from 'lucide-react';
 import { logout } from '../redux/slices/authSlice';
 
 const Navbar = () => {
@@ -13,6 +13,7 @@ const Navbar = () => {
 
   const { isAuthenticated, user } = useSelector((state) => state.auth);
   const { totalItems } = useSelector((state) => state.cart);
+  const { items: wishlistItems } = useSelector((state) => state.wishlist);
 
   const categories = [
     { name: 'Women', subcategories: ['Tops', 'Dresses', 'Bottoms', 'Footwear'] },
@@ -120,6 +121,12 @@ const Navbar = () => {
                       >
                         My Orders
                       </Link>
+                      <Link
+                        to="/wishlist"
+                        className="block px-4 py-2 text-gray-600 hover:bg-gray-100 transition-colors"
+                      >
+                        Wishlist
+                      </Link>
                       <button
                         onClick={handleLogout}
                         className="w-full text-left px-4 py-2 text-gray-600 hover:bg-gray-100 transition-colors flex items-center space-x-2"
@@ -140,6 +147,19 @@ const Navbar = () => {
                 </Link>
               )}
             </div>
+
+            {/* Wishlist */}
+            <Link
+              to="/wishlist"
+              className="relative text-gray-700 hover:text-blue-500 transition-colors"
+            >
+              <Heart className="w-5 h-5" />
+              {wishlistItems.length > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  {wishlistItems.length}
+                </span>
+              )}
+            </Link>
 
             {/* Cart */}
             <Link

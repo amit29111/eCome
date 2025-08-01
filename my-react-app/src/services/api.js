@@ -52,4 +52,13 @@ export const usersAPI = {
   changePassword: (passwordData) => api.put('/users/change-password', passwordData),
 };
 
+// Wishlist API
+export const wishlistAPI = {
+  getWishlist: () => api.get('/wishlist'),
+  addToWishlist: (productId) => api.post(`/wishlist/add/${productId}`),
+  removeFromWishlist: (productId) => api.delete(`/wishlist/remove/${productId}`),
+  clearWishlist: () => api.delete('/wishlist/clear'),
+  checkInWishlist: (productId) => api.get(`/wishlist/check/${productId}`),
+};
+
 export default api;

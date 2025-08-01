@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Heart, ShoppingCart, Star, Truck, Shield, RotateCcw } from 'lucide-react';
 import { fetchProductById, clearCurrentProduct } from '../redux/slices/productSlice';
 import { addToCart } from '../redux/slices/cartSlice';
+import { addToWishlist, removeFromWishlist, checkInWishlist } from '../redux/slices/wishlistSlice';
 import { PageLoader } from '../components/Loader';
 import Button from '../components/Button';
 
@@ -13,22 +14,28 @@ const ProductDetails = () => {
   const dispatch = useDispatch();
   
   const { currentProduct: product, isLoading } = useSelector((state) => state.products);
+  const { wishlistStatus } = useSelector((state) => state.wishlist);
+  const { isAuthenticated } = useSelector((state) => state.auth);
   
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
   const [quantity, setQuantity] = useState(1);
-  const [isFavorite, setIsFavorite] = useState(false);
+
+  const isFavorite = wishlistStatus[id] || false;
 
   useEffect(() => {
     if (id) {
       dispatch(fetchProductById(id));
+      if (isAuthenticated) {
+        dispatch(checkInWishlist(id));
+      }
     }
     
     return () => {
       dispatch(clearCurrentProduct());
     };
-  }, [dispatch, id]);
+  }, [dispatch, id, isAuthenticated]);
 
   useEffect(() => {
     if (product) {
@@ -54,6 +61,19 @@ const ProductDetails = () => {
   const handleBuyNow = () => {
     handleAddToCart();
     navigate('/cart');
+  };
+
+  const handleToggleWishlist = () => {
+    if (!isAuthenticated) {
+      alert('Please login to add items to wishlist');
+      return;
+    }
+
+    if (isFavorite) {
+      dispatch(removeFromWishlist(id));
+    } else {
+      dispatch(addToWishlist(id));
+    }
   };
 
   const getAvailableStock = () => {
@@ -259,7 +279,7 @@ const ProductDetails = () => {
                 </Button>
                 
                 <button
-                  onClick={() => setIsFavorite(!isFavorite)}
+                  onClick={handleToggleWishlist}
                   className="p-3 border border-gray-300 rounded-md hover:bg-gray-50"
                 >
                   <Heart className={`w-5 h-5 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
