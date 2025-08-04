@@ -127,6 +127,14 @@ const Navbar = () => {
                       >
                         Wishlist
                       </Link>
+                      {user?.role === 'admin' && (
+                        <Link
+                          to="/admin"
+                          className="block px-4 py-2 text-gray-600 hover:bg-gray-100 transition-colors"
+                        >
+                          Admin Panel
+                        </Link>
+                      )}
                       <button
                         onClick={handleLogout}
                         className="w-full text-left px-4 py-2 text-gray-600 hover:bg-gray-100 transition-colors flex items-center space-x-2"

@@ -101,11 +101,7 @@ router.put('/:id', adminAuth, async (req, res) => {
 // Delete product (Admin only)
 router.delete('/:id', adminAuth, async (req, res) => {
   try {
-    const product = await Product.findByIdAndUpdate(
-      req.params.id,
-      { isActive: false },
-      { new: true }
-    );
+    const product = await Product.findByIdAndDelete(req.params.id);
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }

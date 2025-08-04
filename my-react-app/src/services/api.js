@@ -43,6 +43,7 @@ export const ordersAPI = {
   getById: (id) => api.get(`/orders/${id}`),
   cancel: (id) => api.put(`/orders/${id}/cancel`),
   updateStatus: (id, status) => api.put(`/orders/${id}/status`, status),
+  getAllOrders: (params) => api.get('/admin/orders', { params }),
 };
 
 // Users API
@@ -50,6 +51,8 @@ export const usersAPI = {
   getProfile: () => api.get('/users/profile'),
   updateProfile: (userData) => api.put('/users/profile', userData),
   changePassword: (passwordData) => api.put('/users/change-password', passwordData),
+  getAllUsers: (params) => api.get('/admin/users', { params }),
+  updateUserStatus: (userId, statusData) => api.put(`/admin/users/${userId}/status`, statusData),
 };
 
 // Wishlist API
@@ -59,6 +62,12 @@ export const wishlistAPI = {
   removeFromWishlist: (productId) => api.delete(`/wishlist/remove/${productId}`),
   clearWishlist: () => api.delete('/wishlist/clear'),
   checkInWishlist: (productId) => api.get(`/wishlist/check/${productId}`),
+};
+
+// Admin API
+export const adminAPI = {
+  getStats: () => api.get('/admin/stats'),
+  getAllOrders: (params) => api.get('/admin/orders', { params }),
 };
 
 export default api;
